@@ -1,4 +1,4 @@
-import {styled} from '..'
+import { styled } from '..'
 
 export const HomeContainer = styled('main', {
   display: 'flex',
@@ -22,7 +22,7 @@ export const Product = styled('a', {
   justifyContent: 'center',
 
   img: {
-    objectFit: 'cover',
+    objectFit: 'contain',
   },
 
   footer: {
