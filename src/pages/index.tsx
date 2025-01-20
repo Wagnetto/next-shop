@@ -9,17 +9,26 @@ import cap from '../assets/product-images/cap.png'
 import greenTee from '../assets/product-images/green-T.png'
 
 import 'keen-slider/keen-slider.min.css'
+// import { useEffect, useState } from 'react'
 
-export default function Home() {
+export default function Home(props) {
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 2.7,
       spacing: 48,
     },
   })
+  // const [list, setList] = useState<number[]>()
+
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setList([1, 2, 3, 4])
+  //   }, 3000)
+  // }, [list])
 
   return (
     <HomeContainer ref={sliderRef} className="keen-slider">
+      <pre>{JSON.stringify(props.list)}</pre>
       <Product className="keen-slider__slide">
         <Image src={redTee} width={520} height={480} alt="" />
         <footer>
@@ -61,4 +70,14 @@ export default function Home() {
       </Product>
     </HomeContainer>
   )
+}
+
+export const getServerSideProps = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 3000))
+  console.log('rodou, mas apenas no servidor. Client não visualiza')
+  return {
+    props: {
+      list: [1, 2, 3, 4],
+    },
+  }
 }
