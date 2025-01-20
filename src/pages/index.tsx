@@ -1,6 +1,10 @@
+import { GetServerSideProps } from 'next'
 import Image from 'next/image'
-import { HomeContainer, Product } from '../styles/pages/home'
+
 import { useKeenSlider } from 'keen-slider/react'
+
+import { stripe } from '../lib/stripe'
+import { HomeContainer, Product } from '../styles/pages/home'
 
 import redTee from '../assets/product-images/red-T.png'
 import hoodie from '../assets/product-images/hoodie.png'
@@ -9,8 +13,18 @@ import cap from '../assets/product-images/cap.png'
 import greenTee from '../assets/product-images/green-T.png'
 
 import 'keen-slider/keen-slider.min.css'
+import Stripe from 'stripe'
 
-export default function Home() {
+interface HomeProps {
+  products: {
+    id: string
+    name: string
+    imageUrl: string
+    price: number
+  }[]
+}
+
+export default function Home({ products }: HomeProps) {
   const [sliderRef] = useKeenSlider({
     slides: {
       perView: 2.7,
@@ -20,45 +34,45 @@ export default function Home() {
 
   return (
     <HomeContainer ref={sliderRef} className="keen-slider">
-      <Product className="keen-slider__slide">
-        <Image src={redTee} width={520} height={480} alt="" />
-        <footer>
-          <strong>Basic Red Tee </strong>
-          <span>R$ 119,00</span>
-        </footer>
-      </Product>
-
-      <Product className="keen-slider__slide">
-        <Image src={hoodie} width={520} height={480} alt="" />
-        <footer>
-          <strong>Orange Hoodie </strong>
-          <span>R$ 369,00</span>
-        </footer>
-      </Product>
-
-      <Product className="keen-slider__slide">
-        <Image src={blackTee} width={520} height={480} alt="" />
-        <footer>
-          <strong>Basic Black Tee </strong>
-          <span>R$ 119,00</span>
-        </footer>
-      </Product>
-
-      <Product className="keen-slider__slide">
-        <Image src={cap} width={520} height={480} alt="" />
-        <footer>
-          <strong>White Cap </strong>
-          <span>R$ 99,00</span>
-        </footer>
-      </Product>
-
-      <Product className="keen-slider__slide">
-        <Image src={greenTee} width={520} height={480} alt="" />
-        <footer>
-          <strong>Basic Green Tee </strong>
-          <span>R$ 119,00</span>
-        </footer>
-      </Product>
+      {products.map((product) => {
+        return (
+          <Product key={product.id} className="keen-slider__slide">
+            <Image src={product.imageUrl} width={520} height={480} alt="" />
+            <footer>
+              <strong>{product.name}</strong>
+              <span>
+                {product.price.toLocaleString('pt-BR', {
+                  style: 'currency',
+                  currency: 'BRL',
+                })}
+              </span>
+            </footer>
+          </Product>
+        )
+      })}
     </HomeContainer>
   )
+}
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const response = await stripe.products.list({
+    expand: ['data.default_price'],
+  })
+
+  const products = response.data.map((product) => {
+    const price = product.default_price as Stripe.Price
+
+    return {
+      id: product.id,
+      name: product.name,
+      imageUrl: product.images[0],
+      price: price.unit_amount / 100,
+    }
+  })
+
+  return {
+    props: {
+      products,
+    },
+  }
 }
