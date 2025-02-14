@@ -4,6 +4,7 @@ import { GetServerSideProps } from 'next'
 import { stripe } from '../lib/stripe'
 import Stripe from 'stripe'
 import Image from 'next/image'
+import Head from 'next/head'
 
 interface SuccessProps {
   customerName: string
@@ -15,23 +16,37 @@ interface SuccessProps {
 
 export default function Success({ customerName, product }: SuccessProps) {
   return (
-    <SuccessContainer>
-      <h1>Compra Efetuada!</h1>
-      <ImageContainer>
-        <Image src={product.imageUrl} alt="" width={120} height={110} />
-      </ImageContainer>
-      <p>
-        Obaa! <span>{customerName}</span>, sua compra{' '}
-        <span>{product.name}</span> foi efetuada e em breve estará a caminho da
-        sua casa.
-      </p>
+    <>
+      <Head>
+        <title>Compra efetuada | Next Shop </title>
+        <meta name="robots" content="noindex" />
+      </Head>
+      <SuccessContainer>
+        <h1>Compra Efetuada!</h1>
+        <ImageContainer>
+          <Image src={product.imageUrl} alt="" width={120} height={110} />
+        </ImageContainer>
+        <p>
+          Obaa! <span>{customerName}</span>, sua compra{' '}
+          <span>{product.name}</span> foi efetuada e em breve estará a caminho
+          da sua casa.
+        </p>
 
-      <Link href="/">Voltar ao catálogo</Link>
-    </SuccessContainer>
+        <Link href="/">Voltar ao catálogo</Link>
+      </SuccessContainer>
+    </>
   )
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  if (!query.session_id) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
   const sessionId = String(query.session_id)
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ['line_items', 'line_items.data.price.product'],
@@ -39,7 +54,6 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
 
   const customerName = session.customer_details.name
   const product = session.line_items.data[0].price.product as Stripe.Product
-  console.log(session.line_items.data)
 
   return {
     props: {
