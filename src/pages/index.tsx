@@ -35,9 +35,6 @@ export default function Home({ products }: HomeProps) {
         <title>Home | Next Shop</title>
       </Head>
       <HomeContainer ref={sliderRef} className="keen-slider">
-        <Head>
-          <title></title>
-        </Head>
         {products.map((product) => {
           return (
             <Link

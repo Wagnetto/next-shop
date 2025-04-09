@@ -1,9 +1,9 @@
 import { AppProps } from 'next/app'
 import { globalStyles } from '../styles/global'
-import logoImg from '../assets/logo.png'
-import { Container, Header, LogoContainer } from '../styles/pages/app'
-import Image from 'next/image'
+import { Container } from '../styles/pages/app'
 import { CartProvider } from 'use-shopping-cart'
+import { Header } from './components/header'
+import { ModalProvider } from '../context/modalContext'
 
 globalStyles()
 const stripeKey = process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY
@@ -13,12 +13,6 @@ const cancelUrl = `${process.env.NEXT_URL}/`
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Container>
-      <Header>
-        <LogoContainer>
-          <Image src={logoImg} alt="logo" width="40px" height="40px" />
-          <h1>Next.js shop</h1>
-        </LogoContainer>
-      </Header>
       <CartProvider
         mode="payment"
         cartMode="client-only"
@@ -28,7 +22,10 @@ export default function App({ Component, pageProps }: AppProps) {
         cancelUrl={cancelUrl}
         shouldPersist={true}
       >
-        <Component {...pageProps} />
+        <ModalProvider>
+          <Header />
+          <Component {...pageProps} />
+        </ModalProvider>
       </CartProvider>
     </Container>
   )
