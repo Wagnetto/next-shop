@@ -49,7 +49,7 @@ const CheckoutButton = styled('button', {
 })
 
 const CancelButton = styled('button', {
-  backgroundColor: '$green300',
+  backgroundColor: '$green500',
   color: 'white',
   border: 'none',
   borderRadius: '8px',
@@ -57,7 +57,7 @@ const CancelButton = styled('button', {
   cursor: 'pointer',
   fontWeight: 'light',
   '&:hover': {
-    backgroundColor: '$green800',
+    backgroundColor: '$green300',
   },
   '&:disabled': {
     opacity: 0.6,
