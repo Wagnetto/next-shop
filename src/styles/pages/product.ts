@@ -27,6 +27,22 @@ export const ImageContainer = styled('div', {
   },
 })
 
+export const BackButton = styled('button', {
+  position: 'absolute',
+  top: '1rem',
+  left: '1rem',
+  backgroundColor: '$gray800',
+  border: 'none',
+  color: '$white',
+  borderRadius: '6px',
+  padding: '0.5rem 1rem',
+  cursor: 'pointer',
+  fontSize: '$md',
+  '&:hover': {
+    backgroundColor: '$gray700',
+  },
+})
+
 export const ProductDetails = styled('div', {
   display: 'flex',
   flexDirection: 'column',

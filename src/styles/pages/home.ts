@@ -46,6 +46,29 @@ export const Product = styled('div', {
     strong: {
       fontSize: '$lg',
     },
+    div: {
+      marginTop: 'auto',
+      backgroundColor: '$green500',
+      border: 0,
+      color: '$white',
+      borderRadius: 8,
+      padding: '2 rem',
+      cursor: 'pointer',
+      width: '56px',
+      height: '56px',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+
+      '&:disabled': {
+        opacity: 0.6,
+        cursor: 'not-allowed',
+      },
+
+      '&:not(:disabled)hover': {
+        backgroundColor: '$green300',
+      },
+    },
 
     span: {
       fontSize: '$xl',
